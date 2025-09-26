@@ -111,6 +111,8 @@ streamlit run app/app.py
 
 ## Visual Interface
 
+![project_schema](Images/interface.png)
+
 * Initial launch: prompts for document upload.
 * Subsequent launches: chat interface available with uploaded documents listed.
 * AI responses include source information for transparency.
