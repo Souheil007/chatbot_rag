@@ -1,0 +1,23 @@
+Query: Milyen típusú biztosításról van szó?
+Answer: Kötelező gépjármű-felelősségbiztosítás (KGFB), amely a jármű üzemeltetése során okozott károkra nyújt fedezetet.
+
+Query: Mire terjed ki a biztosítás?
+Answer: Dologi károkra (1 220 000 euróig) és személyi sérüléses károkra (6 070 000 euróig), valamint sérelemdíjra a biztosítottal szembeni megalapozott kártérítési igény esetén.
+
+Query: Hol érvényes a biztosítás?
+Answer: Az Európai Gazdasági Térségben, Svájcban és a Zöldkártya Rendszerhez tartozó területeken.
+
+Query: Mire nem terjed ki a biztosítás?
+Answer: Saját járműben keletkezett károkra, a károkozó személy saját sérüléseire, biztosítottak egymás közötti igényeire, gépjárműversenyen vagy edzésen okozott károkra, fel- és lerakodás közben történt károkra, valamint környezetszennyezésre baleset nélkül.
+
+Query: Milyen kötelezettségeim vannak a biztosítással kapcsolatban?
+Answer: Szerződéskötési, közlési és változás-bejelentési, együttműködési, díjfizetési, valamint kárenyhítési, kárbejelentési és információadási kötelezettségek.
+
+Query: Mikor szűnik meg a biztosítási fedezet?
+Answer: A jármű eladásakor vagy az üzembentartói jog megszűnésekor, évfordulós felmondáskor, határozott tartamú szerződés lejáratakor, illetve díjnemfizetés esetén a türelmi idő lejártával.
+
+Query: Hogyan lehet megszüntetni a szerződést?
+Answer: Évfordulóra, legalább 30 nappal korábban indoklás nélkül felmondható, továbbá érdekmúlás vagy közös megegyezés esetén is megszűnhet.
+
+Query: Hogyan kell fizetnem a biztosítási díjat?
+Answer: A biztosítási díj előre fizetendő, a szerződésben meghatározott gyakorisággal (1, 2, 4 vagy 12 részletben), postai csekken, banki átutalással, csoportos beszedéssel vagy bankkártyával.
