@@ -112,9 +112,9 @@ def get_vectorstore(pdfs, from_session_state=False, persist_directory=None):
     )
     client = Mistral(api_key="4eWqDtKNIJZ5mQH0Cm53vPHm4FzOZteV")
 
-    if from_session_state and persist_directory and os.path.exists(persist_directory):
+    '''if from_session_state and persist_directory and os.path.exists(persist_directory):
         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
-        return vectordb
+        return vectordb'''
 
     docs_with_metadata = extract_pdf_text_mistral(client, pdfs)
     chunks = []

@@ -7,7 +7,6 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from dotenv import load_dotenv
 from langchain.retrievers import BM25Retriever
-
 def get_context_retriever_chain(vectordb,docs):
     """
     Create a context retriever chain for generating responses based on the chat history and vector database
@@ -85,19 +84,25 @@ def chat(chat_history, vectordb,docs):
         chat_history = chat_history + [HumanMessage(content=user_query), AIMessage(content=response)]
         # Display source of the response on sidebar
         with st.sidebar:
-            metadata_dict = defaultdict(list)
-            for doc in context:
-                print(context)
-                source = doc.metadata.get('source', 'Unknown')
-                page = doc.metadata.get('page', 'N/A')
-                chunk_text = doc.page_content  # This is the text chunk itself
-                metadata_dict[source].append((page, chunk_text))
-            
-            for source, page_chunks in metadata_dict.items():
-                st.write(f"Source: {source}")
-                for page, chunk in page_chunks:
-                    st.write(f"Page: {page}")
-                    st.write(f"Chunk: {chunk}")  # show first 200 chars
+            st.subheader("Retrieved Chunks with Scores")
+            # Get documents along with similarity scores
+            results = vectordb.similarity_search_with_score(user_query, k=5)
+
+            # Deduplicate based on chunk content
+            seen = set()
+            unique_results = []
+            for doc, score in results:
+                if doc.page_content not in seen:
+                    unique_results.append((doc, score))
+                    seen.add(doc.page_content)
+
+            # Display
+            for doc, score in unique_results:
+                st.write(f"Score: {score:.4f}")
+                st.write(f"Source: {doc.metadata.get('source','Unknown')}")
+                st.write(f"Page: {doc.metadata.get('page','N/A')}")
+                st.write(f"Chunk: {doc.page_content}") 
+
                     
 
     # Display chat history
