@@ -23,5 +23,7 @@ def save_docs_to_vectordb(pdf_docs, upload_docs):
         # Display the processing message
         with st.spinner("Processing"):
             # Create or update the vectorstore with the newly uploaded documents
-            get_vectorstore(new_files_names)
+            if new_files_names:  # Only create vectorstore if there are PDFs
+                get_vectorstore(new_files_names)
+
             st.success(f"{pdf.name} uploaded successfully to 'docs' folder.")

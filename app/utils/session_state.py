@@ -19,8 +19,7 @@ def initialize_session_state_variables(st):
                 # Set to the name of the files present in the docs folder
                 st.session_state.processed_documents = upload_docs
             elif variable == "vectordb":
-                # Is set to none if its the first time the app is initialized. If not, is set to the vector database that already exists
-                st.session_state.vectordb = get_vectorstore(upload_docs, from_session_state=True)
+                st.session_state.vectordb = None  # Initialize as empty
             elif variable == "previous_upload_docs_length":
                 # Set to the quantity of documents in the docs folder during app startup
                 st.session_state.previous_upload_docs_length = len(upload_docs)
