@@ -55,21 +55,43 @@ headers_to_split_on = [
 def split_md(doc_dict):
     """
     doc_dict = {"source": filename, "page": page_number, "text": md_text}
+    Creates chunks from markdown splits AND expanded chunks by concatenating with up to next 3 chunks.
     """
     splitter = MarkdownHeaderTextSplitter(headers_to_split_on, return_each_line=True)
     md_splits = splitter.split_text(doc_dict["text"])  # list of Document objects
 
-    chunks = []
+    base_chunks = []
     seen = set()
     for doc in md_splits:
         text = doc.page_content.strip()
         if text and text not in seen:
-            chunks.append(Document(
+            base_chunks.append(Document(
                 page_content=text,
                 metadata={"source": doc_dict["source"], "page": doc_dict["page"]}
             ))
             seen.add(text)
-    return chunks
+
+    # Expand chunks by concatenating up to next 3 chunks
+    expanded_chunks = []
+    for i in range(len(base_chunks)):
+        # Start with current chunk
+        combined_text = base_chunks[i].page_content
+        expanded_chunks.append(Document(
+            page_content=combined_text,
+            metadata=base_chunks[i].metadata
+        ))
+
+        # Add combinations with next 1, 2, 3 chunks
+        for j in range(1, 3):
+            if i + j < len(base_chunks):
+                combined_text += " " + base_chunks[i + j].page_content
+                expanded_chunks.append(Document(
+                    page_content=combined_text,
+                    metadata=base_chunks[i].metadata  # keep metadata of starting chunk
+                ))
+
+    return expanded_chunks
+
 
 
 
