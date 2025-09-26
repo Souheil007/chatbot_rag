@@ -84,7 +84,7 @@ def chat(chat_history, vectordb,docs):
         chat_history = chat_history + [HumanMessage(content=user_query), AIMessage(content=response)]
         # Display source of the response on sidebar
         with st.sidebar:
-            st.subheader("Retrieved Chunks with Scores")
+            st.subheader("Retrieved Chunks with Distance(lower is better)")
             # Get documents along with similarity scores
             results = vectordb.similarity_search_with_score(user_query, k=5)
 
@@ -98,10 +98,11 @@ def chat(chat_history, vectordb,docs):
 
             # Display
             for doc, score in unique_results:
-                st.write(f"Score: {score:.4f}")
+                st.markdown("-----------")
                 st.write(f"Source: {doc.metadata.get('source','Unknown')}")
                 st.write(f"Page: {doc.metadata.get('page','N/A')}")
                 st.write(f"Chunk: {doc.page_content}") 
+                st.write(f"Distance: {score:.4f}")
 
                     
 
