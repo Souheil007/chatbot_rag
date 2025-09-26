@@ -32,8 +32,8 @@ class ChatApp:
             os.makedirs("docs")
 
         # Streamlit config
-        st.set_page_config(page_title="Chat with PDFs 📚")
-        st.title("Chat with PDFs 📚")
+        st.set_page_config(page_title="Insurance Chatbot 📚")
+        st.title("Insurance Chatbot 📚")
 
         # ✅ Only clear old data once per app session
         if "app_initialized" not in st.session_state:
