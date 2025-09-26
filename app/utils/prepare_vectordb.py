@@ -37,10 +37,12 @@ def perform_ocr(client, file_path: str, model: str = "mistral-ocr-latest"):
 
     return response
 
+
 def get_markdown_from_ocr(response):
     resp_dict = response.model_dump()
     pages = resp_dict.get("pages", [])
-    all_md = "\n\n".join([p.get("markdown", "") for p in pages if p.get("markdown")])
+    # Return list of tuples (page_number, markdown_text)
+    all_md = [(i+1, p.get("markdown", "")) for i, p in enumerate(pages) if p.get("markdown")]
     return all_md
 
 # ---------------- Markdown Splitting ----------------
@@ -50,14 +52,26 @@ headers_to_split_on = [
     ("###", "Header 3"),
 ]
 
-def split_md(md: str):
+def split_md(doc_dict):
+    """
+    doc_dict = {"source": filename, "page": page_number, "text": md_text}
+    """
     splitter = MarkdownHeaderTextSplitter(headers_to_split_on, return_each_line=True)
-    md_splits = splitter.split_text(md)  # returns list of Document objects
+    md_splits = splitter.split_text(doc_dict["text"])  # list of Document objects
 
-    # Ensure we return proper Document objects for Chroma
-    chunks = [Document(page_content=doc.page_content.strip()) for doc in md_splits if doc.page_content.strip()]
-    print(f"📑 Split into {len(chunks)} chunks")
+    chunks = []
+    seen = set()
+    for doc in md_splits:
+        text = doc.page_content.strip()
+        if text and text not in seen:
+            chunks.append(Document(
+                page_content=text,
+                metadata={"source": doc_dict["source"], "page": doc_dict["page"]}
+            ))
+            seen.add(text)
     return chunks
+
+
 
 # ---------------- PDF Extraction ----------------
 def extract_pdf_text_mistral(client, pdfs):
@@ -65,9 +79,15 @@ def extract_pdf_text_mistral(client, pdfs):
     for pdf in pdfs:
         pdf_path = os.path.join("docs", pdf)
         response = perform_ocr(client, pdf_path)
-        md_text = get_markdown_from_ocr(response)
-        docs.append(md_text)
+        page_md_list = get_markdown_from_ocr(response)  # list of (page_number, markdown)
+        for page, md_text in page_md_list:
+            docs.append({
+                "source": pdf,
+                "page": page,
+                "text": md_text
+            })
     return docs
+
 
 def extract_pdf_text(pdfs):
     docs = []
@@ -96,17 +116,21 @@ def get_vectorstore(pdfs, from_session_state=False, persist_directory=None):
         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
         return vectordb
 
-    docs = extract_pdf_text_mistral(client, pdfs)
+    docs_with_metadata = extract_pdf_text_mistral(client, pdfs)
+    chunks = []
+    for doc in docs_with_metadata:
+        chunks.extend(split_md(doc))
 
-    # ✅ Split each markdown into Document objects
-    chunks = [chunk for doc in docs for chunk in split_md(doc)]
+    print(f"📑 Split into {len(chunks)} chunks")
+    for i, chunk in enumerate(chunks, start=1):
+        print(f"--- Chunk {i} (Page {chunk.metadata['page']}) ---\n{chunk.page_content}\n{'-'*50}\n")
 
     vectordb = Chroma.from_documents(
         documents=chunks,
         embedding=embedding,
         persist_directory=persist_directory
     )
-    return vectordb, docs
+    return vectordb, docs_with_metadata
 
 
 
