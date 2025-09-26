@@ -132,7 +132,8 @@ def get_vectorstore(pdfs, from_session_state=False, persist_directory=None):
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         model_kwargs={"device": "cpu"}
     )
-    client = Mistral(api_key="4eWqDtKNIJZ5mQH0Cm53vPHm4FzOZteV")
+    load_dotenv()
+    client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
 
     '''if from_session_state and persist_directory and os.path.exists(persist_directory):
         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
